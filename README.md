@@ -8,8 +8,7 @@
 Demo/
 ├── backend/
 │   ├── db.php
-│   ├── get_products.php
-│   └── get_products_rest.php
+│   └── get_products.php
 └── frontend/
     └── index.html
 ```
@@ -18,10 +17,12 @@ Demo/
 
 1. Upload toàn bộ nội dung thư mục `backend/` lên host PHP của bạn (ví dụ: Render.com)
 2. Cấu hình các biến môi trường sau trên host:
-   - `SUPABASE_REST_URL`: URL của Supabase REST API
-   - `SUPABASE_SERVICE_ROLE_KEY`: Service Role Key của Supabase
-3. Đảm bảo PHP có hỗ trợ cURL extension
-4. Test API endpoint bằng cách truy cập `https://your-backend-url.com/get_products_rest.php`
+   - `SUPABASE_HOST`: Host của Supabase database
+   - `SUPABASE_DB`: Tên database
+   - `SUPABASE_USER`: Username của database
+   - `SUPABASE_PASSWORD`: Password của database
+3. Đảm bảo PHP có hỗ trợ PDO_PGSQL extension
+4. Test API endpoint bằng cách truy cập `https://your-backend-url.com/get_products.php`
 
 ## Triển khai Frontend
 
