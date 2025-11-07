@@ -82,7 +82,7 @@
                 loading.style.display = 'block';
                 errorDiv.style.display = 'none';
                 
-                const response = await fetch('get_products.php');
+                const response = await fetch('get_products_rest.php');
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -116,6 +116,5 @@
         // Load products when page loads
         loadProducts();
     </script>
-        </script>
 </body>
 </html>
