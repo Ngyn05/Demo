@@ -73,6 +73,9 @@
     </div>
 
     <script>
+        // Cấu hình API endpoint
+        const API_URL = 'https://your-backend-url.com/get_products_rest.php'; // Thay đổi URL này khi deploy
+
         async function loadProducts() {
             const loading = document.getElementById('loading');
             const errorDiv = document.getElementById('error');
@@ -82,7 +85,7 @@
                 loading.style.display = 'block';
                 errorDiv.style.display = 'none';
                 
-                const response = await fetch('get_products_rest.php');
+                const response = await fetch(API_URL);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
