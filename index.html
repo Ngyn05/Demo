@@ -116,45 +116,6 @@
         // Load products when page loads
         loadProducts();
     </script>
-</body>
-</html>
-
-  <script>
-    // Khởi tạo Supabase client
-    const SUPABASE_URL = 'https://qhjcwkgvjurdxmcxdgnv.supabase.co'
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFoamN3a2d2anVyZHhtY3hkZ252Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTk1MTkxNzIsImV4cCI6MjAxNTA5NTE3Mn0.HCM1dDENLbIkSZIlVAG3msAtVpmaA7yB7eehY5T7r6g'
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-
-    async function loadProducts() {
-      try {
-        const { data, error } = await supabase
-          .from('product')
-          .select('*')
-          .order('created_at', { ascending: false })
-
-        if (error) throw error
-
-        const tbody = document.querySelector("#productTable tbody");
-        tbody.innerHTML = "";
-        
-        data.forEach(p => {
-          tbody.innerHTML += `
-            <tr>
-              <td>${p.id}</td>
-              <td>${p.name}</td>
-              <td>${p.description || ''}</td>
-              <td>${Number(p.price).toLocaleString()}₫</td>
-              <td>${p.image ? `<img src="${p.image}" alt="${p.name}">` : ''}</td>
-            </tr>`;
-        });
-      } catch (error) {
-        console.error('Error loading products:', error.message);
-        alert('Không thể tải danh sách sản phẩm. Vui lòng thử lại sau.');
-      }
-    }
-
-    // Load products when page loads
-    loadProducts();
-  </script>
+        </script>
 </body>
 </html>

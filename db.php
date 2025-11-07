@@ -6,20 +6,12 @@ $dbname = "postgres";
 $user = "postgres";
 $password = "Nguyenhuynh@2904";
 
-try {
-    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;user=$user;password=$password;sslmode=require";
-    $conn = new PDO($dsn);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $conn->exec("SET CLIENT_ENCODING TO 'UTF8'");
-} catch(PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
+// Tạo DSN; đặt sslmode=require vì Supabase yêu cầu kết nối an toàn
+$dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
 
-try {
-    $conn = new PDO($dsn);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $conn->exec("SET CLIENT_ENCODING TO 'UTF8'");
-} catch(PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
+// Tạo PDO connection. Không in/kill process ở đây — để caller (endpoint) bắt lỗi
+$conn = new PDO($dsn, $user, $password, [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+]);
+$conn->exec("SET CLIENT_ENCODING TO 'UTF8'");
 ?>
