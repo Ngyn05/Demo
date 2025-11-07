@@ -1,11 +1,19 @@
 <?php
-$host = getenv('SUPABASE_HOST');
-$port = getenv('SUPABASE_PORT') ?: "5432";
-$dbname = getenv('SUPABASE_DB');
-$user = getenv('SUPABASE_USER');
-$password = getenv('SUPABASE_PASSWORD');
+// Thông tin kết nối Supabase PostgreSQL
+$host = "db.qhjcwkgvjurdxmcxdgnv.supabase.co";
+$port = "5432";
+$dbname = "postgres";
+$user = "postgres";
+$password = "Nguyenhuynh@2904";
 
-$dsn = "pgsql:host=$host;port=$port;dbname=$dbname;user=$user;password=$password";
+try {
+    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;user=$user;password=$password;sslmode=require";
+    $conn = new PDO($dsn);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $conn->exec("SET CLIENT_ENCODING TO 'UTF8'");
+} catch(PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
+}
 
 try {
     $conn = new PDO($dsn);

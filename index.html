@@ -1,40 +1,159 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Danh sách sản phẩm</title>
-  <style>
-    body { font-family: Arial; width: 800px; margin: 30px auto; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-    img { max-width: 80px; }
-  </style>
+    <meta charset="UTF-8">
+    <title>Danh sách sản phẩm</title>
+    <style>
+        body { 
+            font-family: Arial; 
+            width: 800px; 
+            margin: 30px auto; 
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 { 
+            color: #333;
+            margin-bottom: 20px;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px;
+            background: white;
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 12px; 
+            text-align: left;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+        img { 
+            max-width: 80px;
+            border-radius: 4px;
+        }
+        .error { 
+            color: #dc3545;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            background: #ffe6e6;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
-  <h2>Danh sách sản phẩm</h2>
-  <table id="productTable">
-    <thead>
-      <tr><th>ID</th><th>Tên</th><th>Giá (VNĐ)</th><th>Ảnh</th></tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+    <div class="container">
+        <h2>Danh sách sản phẩm</h2>
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="loading" class="loading">Đang tải dữ liệu...</div>
+        <table id="productTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên</th>
+                    <th>Mô tả</th>
+                    <th>Giá (VNĐ)</th>
+                    <th>Ảnh</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        async function loadProducts() {
+            const loading = document.getElementById('loading');
+            const errorDiv = document.getElementById('error');
+            const tbody = document.querySelector("#productTable tbody");
+            
+            try {
+                loading.style.display = 'block';
+                errorDiv.style.display = 'none';
+                
+                const response = await fetch('get_products.php');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const result = await response.json();
+                
+                if (!result.success) {
+                    throw new Error(result.error || 'Unknown error occurred');
+                }
+
+                tbody.innerHTML = '';
+                result.data.forEach(p => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${p.id}</td>
+                            <td>${p.name}</td>
+                            <td>${p.description || '-'}</td>
+                            <td>${Number(p.price).toLocaleString()}₫</td>
+                            <td>${p.image ? `<img src="${p.image}" alt="${p.name}">` : '-'}</td>
+                        </tr>`;
+                });
+
+            } catch (error) {
+                console.error('Error:', error);
+                errorDiv.textContent = 'Không thể tải danh sách sản phẩm: ' + error.message;
+                errorDiv.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // Load products when page loads
+        loadProducts();
+    </script>
+</body>
+</html>
 
   <script>
+    // Khởi tạo Supabase client
+    const SUPABASE_URL = 'https://qhjcwkgvjurdxmcxdgnv.supabase.co'
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFoamN3a2d2anVyZHhtY3hkZ252Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTk1MTkxNzIsImV4cCI6MjAxNTA5NTE3Mn0.HCM1dDENLbIkSZIlVAG3msAtVpmaA7yB7eehY5T7r6g'
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
     async function loadProducts() {
-      const res = await fetch("get_products.php");
-      const data = await res.json();
-      const tbody = document.querySelector("#productTable tbody");
-      tbody.innerHTML = "";
-      data.forEach(p => {
-        tbody.innerHTML += `
-          <tr>
-            <td>${p.id}</td>
-            <td>${p.name}</td>
-            <td>${Number(p.price).toLocaleString()}₫</td>
-            <td>${p.img ? `<img src="uploads/${p.img}" alt="">` : ''}</td>
-          </tr>`;
-      });
+      try {
+        const { data, error } = await supabase
+          .from('product')
+          .select('*')
+          .order('created_at', { ascending: false })
+
+        if (error) throw error
+
+        const tbody = document.querySelector("#productTable tbody");
+        tbody.innerHTML = "";
+        
+        data.forEach(p => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${p.id}</td>
+              <td>${p.name}</td>
+              <td>${p.description || ''}</td>
+              <td>${Number(p.price).toLocaleString()}₫</td>
+              <td>${p.image ? `<img src="${p.image}" alt="${p.name}">` : ''}</td>
+            </tr>`;
+        });
+      } catch (error) {
+        console.error('Error loading products:', error.message);
+        alert('Không thể tải danh sách sản phẩm. Vui lòng thử lại sau.');
+      }
     }
+
+    // Load products when page loads
     loadProducts();
   </script>
 </body>
