@@ -1,10 +1,10 @@
 <?php
-// Thông tin kết nối Supabase PostgreSQL
-$host = "db.qhjcwkgvjurdxmcxdgnv.supabase.co";
-$port = "5432";
-$dbname = "postgres";
-$user = "postgres";
-$password = "Nguyenhuynh@2904";
+// Thông tin kết nối Supabase PostgreSQL từ biến môi trường
+$host = getenv('SUPABASE_HOST') ?: '';
+$port = getenv('SUPABASE_PORT') ?: '5432';
+$dbname = getenv('SUPABASE_DB') ?: 'postgres';
+$user = getenv('SUPABASE_USER') ?: '';
+$password = getenv('SUPABASE_PASSWORD') ?: '';
 
 // Tạo DSN; đặt sslmode=require vì Supabase yêu cầu kết nối an toàn
 $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
