@@ -1,17 +1,20 @@
 <?php
-// Thông tin kết nối Supabase PostgreSQL
-$host = "db.qhjcwkgvjurdxmcxdgnv.supabase.co";
-$port = "5432";
-$dbname = "postgres";
-$user = "postgres";
-$password = "Nguyenhuynh@2904";
+// db.php - use environment variables when available (for Render deployment)
 
-// Tạo DSN; đặt sslmode=require vì Supabase yêu cầu kết nối an toàn
+// Read from environment first; fall back to local hardcoded values for dev
+$host = getenv('SUPABASE_HOST') ?: 'db.qhjcwkgvjurdxmcxdgnv.supabase.co';
+$port = getenv('SUPABASE_PORT') ?: '5432';
+$dbname = getenv('SUPABASE_DB') ?: 'postgres';
+$user = getenv('SUPABASE_USER') ?: 'postgres';
+$password = getenv('SUPABASE_PASSWORD') ?: 'Nguyenhuynh@2904';
+
+// Build DSN and create PDO
 $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
 
-// Tạo PDO connection. Không in/kill process ở đây — để caller (endpoint) bắt lỗi
 $conn = new PDO($dsn, $user, $password, [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_EMULATE_PREPARES => false,
 ]);
+
 $conn->exec("SET CLIENT_ENCODING TO 'UTF8'");
 ?>
