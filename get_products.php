@@ -2,12 +2,9 @@
 include 'db.php';
 
 $sql = "SELECT * FROM product ORDER BY id DESC";
-$result = $conn->query($sql);
+$stmt = $conn->query($sql);
 
-$products = [];
-while($row = $result->fetch_assoc()){
-  $products[] = $row;
-}
+$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($products);

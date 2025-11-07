@@ -1,12 +1,17 @@
 <?php
-$servername = getenv('DB_HOST') ?: "db4free.net";
-$username = getenv('DB_USER') ?: "your_username";  // Thay your_username bằng username bạn đăng ký
-$password = getenv('DB_PASSWORD') ?: "your_password";  // Thay your_password bằng password bạn đăng ký
-$dbname = getenv('DB_NAME') ?: "your_database";  // Thay your_database bằng tên database bạn đăng ký
+$host = getenv('SUPABASE_HOST');
+$port = getenv('SUPABASE_PORT') ?: "5432";
+$dbname = getenv('SUPABASE_DB');
+$user = getenv('SUPABASE_USER');
+$password = getenv('SUPABASE_PASSWORD');
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+$dsn = "pgsql:host=$host;port=$port;dbname=$dbname;user=$user;password=$password";
+
+try {
+    $conn = new PDO($dsn);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $conn->exec("SET CLIENT_ENCODING TO 'UTF8'");
+} catch(PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
 }
-$conn->set_charset("utf8mb4");
 ?>
