@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Danh sách sản phẩm</title>
+  <style>
+    body { font-family: Arial; width: 800px; margin: 30px auto; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    img { max-width: 80px; }
+  </style>
+</head>
+<body>
+  <h2>Danh sách sản phẩm</h2>
+  <table id="productTable">
+    <thead>
+      <tr><th>ID</th><th>Tên</th><th>Giá (VNĐ)</th><th>Ảnh</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function loadProducts() {
+      const res = await fetch("get_products.php");
+      const data = await res.json();
+      const tbody = document.querySelector("#productTable tbody");
+      tbody.innerHTML = "";
+      data.forEach(p => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${p.id}</td>
+            <td>${p.name}</td>
+            <td>${Number(p.price).toLocaleString()}₫</td>
+            <td>${p.img ? `<img src="uploads/${p.img}" alt="">` : ''}</td>
+          </tr>`;
+      });
+    }
+    loadProducts();
+  </script>
+</body>
+</html>
